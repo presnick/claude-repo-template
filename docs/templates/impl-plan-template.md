@@ -39,9 +39,11 @@ Active | Completed | Abandoned
 - Integration tests:
 - Manual validation:
 
-## Rollback Plan
+## Deployment Rollback
 
-(How to revert safely.)
+(How to revert a bad deploy. Not needed for development — git handles that naturally.
+Focus on: what services need to be rolled back, database migration reversibility,
+and any external state that could be left inconsistent.)
 
 ## Plan Deltas
 
