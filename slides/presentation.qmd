@@ -12,6 +12,7 @@ format:
     slide-level: 2
     center: false
     auto-stretch: false
+    menu: false
     axe:
       output: console
 title-slide-attributes:

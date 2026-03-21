@@ -83,7 +83,7 @@ npm run slides:a11y
 
 Runs [axe-core](https://github.com/dequelabs/axe-core) WCAG 2.1 AA checks against the rendered HTML. Returns non-zero on violations, so it can be used in CI.
 
-Two upstream reveal.js issues are suppressed (`link-name` on the menu plugin button, `meta-viewport` scaling). These are in reveal.js's generated HTML, not our content. The `link-name` issue has been [filed on the Quarto repo](https://github.com/quarto-dev/quarto-cli/issues/14249).
+One upstream reveal.js issue is suppressed (`meta-viewport` — reveal.js disables pinch-to-zoom for its scaling to work). The slide menu plugin is disabled (`menu: false`) to avoid its accessibility issue; use `Esc` for the overview mode instead.
 
 ### Build commands summary
 
