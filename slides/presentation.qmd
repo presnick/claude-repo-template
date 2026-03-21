@@ -1,0 +1,76 @@
+---
+title: "Presentation Title"
+subtitle: "Subtitle goes here"
+author: "Author Name"
+date: 2026-03-21
+format:
+  revealjs:
+    theme: [default, custom.scss]
+    slide-number: true
+    slide-tone: false
+    embed-resources: true
+    slide-level: 2
+    center: false
+    auto-stretch: false
+    axe:
+      output: console
+title-slide-attributes:
+  data-background-color: "#00274C"
+---
+
+## Section Divider {background-color="#00274C" .section-divider}
+
+
+## Standard Content Slide
+
+This is what a regular slide looks like.
+
+- Bullet points with **bold** and *emphasized* text
+- Second point
+- Nested lists work too:
+  - Sub-item one
+  - Sub-item two
+
+> Blockquotes have an accent border and subtle background.
+
+## Two-Column Layout
+
+:::: {.columns}
+
+::: {.column width="50%"}
+### Left Column
+
+- First point
+- Second point
+- Third point
+:::
+
+::: {.column width="50%"}
+### Right Column
+
+- Another point
+- And another
+- One more
+:::
+
+::::
+
+## Table Example
+
+| Feature | Status | Notes |
+|---------|--------|-------|
+| Dark headers | Done | Styled via theme |
+| Alternating rows | Done | Subtle striping |
+| Clean borders | Done | Light separators |
+
+## Image Example
+
+![Sample placeholder image](images/sample.png){fig-alt="A dark blue rectangle with a maize border containing the text Sample Image 800x400"}
+
+::: {.notes}
+Speaker notes go here. Press S during the presentation to open speaker view.
+:::
+
+## Thank You {background-color="#00274C" .section-divider}
+
+Questions & Discussion

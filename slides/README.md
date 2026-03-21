@@ -1,8 +1,11 @@
 # Slides
 
-Markdown slide decks using [Marp](https://marp.app/) with a custom theme (`theme.css`).
+Presentations built with [Quarto](https://quarto.org/) + [reveal.js](https://revealjs.com/), using a custom SCSS theme.
 
-## Setup
+## Prerequisites
+
+- [Quarto CLI](https://quarto.org/docs/get-started/) (v1.8+)
+- Node.js (for accessibility checking)
 
 ```bash
 npm install
@@ -10,85 +13,132 @@ npm install
 
 ## Authoring
 
-Edit `slides/presentation.md`. Slides are separated by `---`. Use standard Markdown for content.
+Edit `slides/presentation.qmd`. Slides are separated by headings:
 
-### Slide classes
-
-Apply a class with `<!-- _class: classname -->` before a slide's heading:
-
-- `title` — centered white-on-dark title slide with diagonal accent wedge
-- `section` — accent-colored section divider
-- `accent` — dark background for emphasis or key takeaways
-- (no class) — standard content slide
+- `##` (H2) creates a **content** slide
+- `## Title {background-color="#00274C" .section-divider}` creates a **section divider** slide
 
 ### Images
 
-Place images in `slides/images/` and reference them with relative paths:
-
 ```markdown
-![Alt text describing the image](images/photo.png)
+![Alt text](images/photo.png){fig-alt="Detailed description for screen readers"}
 ```
 
-Marp sizing directives go in the alt text:
-
-```markdown
-![w:600 Alt text](images/diagram.png)
-![bg right:40%](images/photo.png)
-```
-
-**Accessibility:** `bg` images become CSS backgrounds and are invisible to screen readers. For those slides, add a hidden description:
-
-```html
-<span style="position:absolute;left:-9999px">Description of the background image</span>
-```
+Place images in `slides/images/`. Both `![alt text]` and `{fig-alt="..."}` provide accessibility — use `fig-alt` for longer descriptions.
 
 ### Two-column layout
 
-```html
-<div class="columns">
-<div>
+```markdown
+:::: {.columns}
 
-Left column content
+::: {.column width="50%"}
+Left column
+:::
 
-</div>
-<div>
+::: {.column width="50%"}
+Right column
+:::
 
-Right column content
-
-</div>
-</div>
+::::
 ```
 
-### Theme
+### Speaker notes
 
-Edit `theme.css` to customize colors, fonts, and slide classes. Colors default to Michigan Blue/Maize.
+```markdown
+::: {.notes}
+Notes visible in speaker view (press S).
+:::
+```
 
-## Build commands
+## Theme
+
+Edit `slides/custom.scss` to customize colors, fonts, and styles. Uses SCSS with two sections:
+
+- `/*-- scss:defaults --*/` — SASS variables (colors, fonts, sizes)
+- `/*-- scss:rules --*/` — custom CSS rules
+
+## Building slides
+
+### Live preview (while authoring)
+
+```bash
+npm run slides:dev
+```
+
+Opens a browser with hot-reload — the presentation rebuilds on every save.
+
+### Build to HTML
+
+```bash
+npm run slides:html
+```
+
+Renders a self-contained HTML file to `docs/presentation.html` with all assets (images, fonts, CSS, JS) inlined via `embed-resources: true`. This is the file that gets published and distributed.
+
+### Accessibility check
+
+```bash
+npm run slides:a11y
+```
+
+Runs [axe-core](https://github.com/dequelabs/axe-core) WCAG 2.1 AA checks against the rendered HTML. Returns non-zero on violations, so it can be used in CI.
+
+Two upstream reveal.js issues are suppressed (`link-name` on the menu plugin button, `meta-viewport` scaling). These are in reveal.js's generated HTML, not our content. The `link-name` issue has been [filed on the Quarto repo](https://github.com/quarto-dev/quarto-cli/issues/14249).
+
+### Build commands summary
 
 | Command | Output | Description |
 |---------|--------|-------------|
-| `npm run slides:dev` | `docs/presentation.html` | Live-reload watcher; rebuilds on every save |
-| `npm run slides:html` | `docs/presentation.html` | One-time HTML build; copies images to `docs/images/` |
-| `npm run slides:pdf` | `docs/presentation.pdf` | PDF with selectable text; embeds images |
-| `npm run slides:zip` | `presentation.zip` | Builds HTML then zips `docs/` for distribution |
-
-## Distributing slides
-
-- **Online:** Publish the `docs/` directory via GitHub Pages (see below).
-- **Offline/downloadable:** Run `npm run slides:zip` to create a self-contained zip. Recipients unzip and open `presentation.html` in any browser. The HTML preserves full text, semantic structure, and screen reader support.
-- **PDF:** `npm run slides:pdf` produces a single file with selectable text, but less accessible than the HTML.
-- **PPTX:** Marp can generate PPTX (`--pptx` flag) but it renders slides as images only — not accessible. Avoid for distribution.
+| `npm run slides:dev` | browser | Live preview with hot-reload |
+| `npm run slides:html` | `docs/presentation.html` | Self-contained HTML build |
+| `npm run slides:a11y` | terminal | axe-core accessibility check |
+| `npm run slides:zip` | `presentation.zip` | Build + zip for distribution |
 
 ## Publishing to GitHub Pages
 
-1. Go to your repo on GitHub: **Settings > Pages**
-2. Under **Source**, select **Deploy from a branch**
-3. Set the branch to `main` (or your default branch) and the folder to `/docs`
-4. Click **Save**
+### 1. Build and push
 
-GitHub will publish the contents of `docs/` to `https://<username>.github.io/<repo-name>/`. After each push that updates `docs/`, the site rebuilds automatically (may take a minute).
+```bash
+npm run slides:html
+git add docs/
+git commit -m "build: update slides"
+git push
+```
 
-The published URL for slides will be:
+### 2. Enable GitHub Pages (one-time setup)
+
+1. Go to your repo on GitHub
+2. **Settings** → **Pages** (in the left sidebar)
+3. Under **Source**, select **Deploy from a branch**
+4. Set branch to **main** and folder to **/docs**
+5. Click **Save**
+
+### 3. Find your published URL
+
+Your slides will be available at:
+
 ```
 https://<username>.github.io/<repo-name>/presentation.html
 ```
+
+For example, if your GitHub username is `presnick` and the repo is `ellison-guest-lecture`:
+
+```
+https://presnick.github.io/ellison-guest-lecture/presentation.html
+```
+
+You can also find the URL on the repo's GitHub Pages settings page. It takes a minute or two after the first push for the site to go live.
+
+## Accessibility
+
+- **Clean semantic DOM**: reveal.js uses `<section>` elements with real HTML content
+- **`aria-hidden`** on inactive slides (built into reveal.js)
+- **Built-in `aria-live` region** announces slide content to screen readers on transition
+- **Keyboard navigation**: arrow keys, Space, Escape for overview
+- **`slide-tone`**: Set to `true` in `presentation.qmd` to play an auditory tone on slide transitions (plays for all users)
+- **`axe: output: console`** in the YAML enables Quarto's built-in axe-core checks during `quarto preview`
+
+## Distributing slides
+
+- **Online**: Publish via GitHub Pages (see above)
+- **Downloadable**: `npm run slides:zip` creates a zip of `docs/`. The HTML has all assets inlined, so it works offline in any browser.

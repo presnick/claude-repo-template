@@ -1,0 +1,163 @@
+/*-- scss:defaults --*/
+
+// Michigan palette
+$primary: #00274C;
+$accent: #FFCB05;
+$muted: #5B656A;
+
+// Fonts
+$font-family-sans-serif: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+$presentation-font-size-root: 40px;
+$presentation-heading-font: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+$presentation-heading-color: $primary;
+
+// Colors
+$body-bg: #ffffff;
+$body-color: #333333;
+$link-color: #00509c;
+
+// Code
+$code-color: $primary;
+$code-block-bg: #f8f8f8;
+
+// Title slide
+$presentation-title-slide-text-align: left;
+
+/*-- scss:rules --*/
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
+
+// ── Content slides: top-align ──
+.reveal .slides section {
+  text-align: left;
+}
+
+.reveal .slides section:not(#title-slide):not(.section-divider) {
+  top: 0 !important;
+}
+
+// ── Title slide ──
+#title-slide {
+  color: #ffffff;
+
+  h1.title {
+    color: #ffffff;
+    font-weight: 800;
+    font-size: 2.8em;
+    border-bottom: none;
+  }
+
+  .subtitle {
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: 300;
+  }
+
+  .author, .date, p {
+    color: rgba(255, 255, 255, 0.7);
+  }
+}
+
+// ── Section divider slides ──
+.section-divider {
+  display: flex !important;
+  flex-direction: column;
+  justify-content: center;
+
+  h2 {
+    color: $accent;
+    border-bottom: none;
+    font-size: 2.4em;
+  }
+
+  p {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 1.2em;
+    font-weight: 400;
+  }
+}
+
+// ── Heading underline accent ──
+.reveal h2 {
+  border-bottom: 3px solid $accent;
+  padding-bottom: 0.2em;
+  margin-bottom: 0.6em;
+}
+
+// ── Bullet markers ──
+.reveal ul > li::marker {
+  color: $accent;
+  font-weight: 800;
+}
+
+.reveal ol > li::marker {
+  color: $primary;
+  font-weight: 700;
+}
+
+.reveal li {
+  margin-bottom: 0.35em;
+}
+
+// ── Blockquotes ──
+.reveal blockquote {
+  border-left: 5px solid $accent;
+  background-color: #FEFEFC;
+  padding: 0.6em 1.2em;
+  font-style: italic;
+  color: $muted;
+  border-radius: 0 6px 6px 0;
+}
+
+// ── Tables ──
+.reveal table th {
+  background-color: $primary;
+  color: #ffffff;
+  font-weight: 700;
+  padding: 0.5em 0.8em;
+  text-align: left;
+}
+
+.reveal table td {
+  padding: 0.4em 0.8em;
+  border-bottom: 1px solid #c4c4c4;
+}
+
+.reveal table tbody tr:nth-child(even) td {
+  background-color: #f0f0f0;
+}
+
+// ── Code ──
+.reveal code {
+  background-color: #f0f0f5;
+  color: $primary;
+  padding: 0.15em 0.35em;
+  border-radius: 4px;
+}
+
+.reveal pre {
+  background-color: $primary;
+  color: #FEFEFC;
+  padding: 1em 1.2em;
+  border-radius: 8px;
+}
+
+.reveal pre code {
+  background: none;
+  color: inherit;
+  padding: 0;
+}
+
+// ── Strong / emphasis ──
+.reveal strong {
+  color: $primary;
+  font-weight: 700;
+}
+
+.reveal em {
+  color: $muted;
+}
+
+// ── Images ──
+.reveal img {
+  border-radius: 8px;
+}

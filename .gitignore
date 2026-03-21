@@ -22,9 +22,15 @@ __pycache__/
 dist/
 build/
 *.egg-info/
+# Slides distribution zip
+presentation.zip
+
+# Test screenshots
+test-screenshots/
+
+# Quarto render cache
+slides/.quarto/
+.quarto/
 
 # Logs
 *.log
-
-# Slides distribution zip
-presentation.zip
