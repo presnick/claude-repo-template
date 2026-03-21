@@ -1,0 +1,12 @@
+{
+  "private": true,
+  "scripts": {
+    "slides:dev": "npx @marp-team/marp-cli --no-stdin --html --theme slides/theme.css -w slides/presentation.md -o docs/presentation.html",
+    "slides:html": "npx @marp-team/marp-cli --no-stdin --html --theme slides/theme.css slides/presentation.md -o docs/presentation.html && cp -r slides/images/ docs/images/ 2>/dev/null || true",
+    "slides:pdf": "npx @marp-team/marp-cli --no-stdin --html --allow-local-files --theme slides/theme.css slides/presentation.md --pdf -o docs/presentation.pdf",
+    "slides:zip": "npm run slides:html && cd docs && zip -r ../presentation.zip . && cd .."
+  },
+  "devDependencies": {
+    "@marp-team/marp-cli": "^4.1.1"
+  }
+}

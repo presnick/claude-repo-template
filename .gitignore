@@ -25,3 +25,6 @@ build/
 
 # Logs
 *.log
+
+# Slides distribution zip
+presentation.zip

@@ -1,0 +1,446 @@
+/* @theme custom */
+/* @auto-scaling false */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
+
+/*
+ * Presentation Theme
+ *
+ * Colors (Michigan palette as default — edit to taste):
+ *   Primary:  #00274C (Michigan Blue)
+ *   Accent:   #FFCB05 (Michigan Maize)
+ *   Muted:    #5B656A
+ *   Off-white:#FEFEFC
+ */
+
+:root {
+  --color-primary: #00274C;
+  --color-accent: #FFCB05;
+  --color-muted: #5B656A;
+  --color-bg: #ffffff;
+  --color-fg: #333333;
+  --color-off-white: #FEFEFC;
+  --font-body: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+/* ── Base slide ── */
+section {
+  font-family: var(--font-body);
+  font-size: 28px;
+  color: var(--color-fg);
+  background: var(--color-bg);
+  padding: 70px 80px 50px 80px;
+  overflow: hidden;
+  clip-path: inset(0);
+  position: relative;
+}
+
+/* Prevent Marp auto-scaling from shrinking text.
+   Content that overflows will be clipped rather than shrunk —
+   this forces you to reduce content per slide instead of
+   ending up with unreadable small text. */
+section p,
+section li,
+section td,
+section th,
+section blockquote {
+  font-size: 28px !important;
+}
+
+section li li {
+  font-size: 24px !important;
+}
+
+/* Subtle rotated accent square on every content slide */
+section::before {
+  content: '';
+  position: absolute;
+  bottom: -40px;
+  right: -40px;
+  width: 280px;
+  height: 280px;
+  background: var(--color-accent);
+  transform: rotate(-35deg);
+  transform-origin: bottom right;
+  opacity: 0.08;
+  z-index: 0;
+}
+
+
+/* ── Typography ── */
+h1, h2, h3 {
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+h1 {
+  font-size: 2.2em;
+  line-height: 1.1;
+  position: relative;
+  z-index: 1;
+}
+
+h2 {
+  font-size: 1.6em;
+  border-bottom: 3px solid var(--color-accent);
+  padding-bottom: 0.2em;
+  margin-bottom: 0.6em;
+  position: relative;
+  z-index: 1;
+}
+
+h3 {
+  font-size: 1.2em;
+}
+
+/* ── Lists ── */
+section li {
+  margin-bottom: 0.35em;
+}
+
+section li::marker {
+  color: var(--color-accent);
+  font-weight: 800;
+}
+
+/* ── Strong / emphasis ── */
+section strong {
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+section em {
+  color: var(--color-muted);
+}
+
+/* ── Links ── */
+section a {
+  color: #00509c;
+  text-decoration: underline;
+}
+
+/* ── Blockquote ── */
+section blockquote {
+  border-left: 5px solid var(--color-accent);
+  padding: 0.6em 1.2em;
+  margin: 0.8em 0;
+  background-color: var(--color-off-white);
+  color: var(--color-muted);
+  font-style: italic;
+  border-radius: 0 6px 6px 0;
+}
+
+section blockquote strong {
+  color: var(--color-primary);
+}
+
+/* ── Tables ── */
+section table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.8em 0;
+}
+
+section th {
+  background-color: var(--color-primary);
+  color: #ffffff;
+  font-weight: 700;
+  padding: 0.5em 0.8em;
+  text-align: left;
+}
+
+section td {
+  padding: 0.4em 0.8em;
+  border-bottom: 1px solid #c4c4c4;
+}
+
+section tr:nth-child(even) td {
+  background-color: var(--color-off-white);
+}
+
+/* ── Code ── */
+section code {
+  background-color: #f0f0f5;
+  color: var(--color-primary);
+  padding: 0.15em 0.35em;
+  border-radius: 4px;
+  font-size: 0.85em;
+}
+
+section pre {
+  background-color: var(--color-primary);
+  color: var(--color-off-white);
+  padding: 1em 1.2em;
+  border-radius: 8px;
+  font-size: 0.75em;
+}
+
+section pre code {
+  background: none;
+  color: inherit;
+  padding: 0;
+}
+
+/* ── Horizontal rule → decorative accent bar ── */
+section hr {
+  border: none;
+  height: 4px;
+  background: var(--color-accent);
+  margin: 1.2em 0;
+}
+
+/* ── Images ── */
+section img {
+  border-radius: 8px;
+}
+
+/* ═══════════════════════════════════════════════════════
+   TITLE SLIDE  (<!-- _class: title -->)
+   ═══════════════════════════════════════════════════════ */
+section.title {
+  background-color: var(--color-primary);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  text-align: left;
+  padding: 80px 90px;
+}
+
+/* Diagonal accent wedge with halftone dots — contained within slide bounds */
+section.title::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50%;
+  height: 100%;
+  background:
+    radial-gradient(circle, rgba(0,39,76,0.4) 1.2px, transparent 1.2px),
+    linear-gradient(135deg, var(--color-accent) 0%, #f0bc00 100%);
+  background-size: 12px 12px, 100% 100%;
+  clip-path: polygon(40% 0, 100% 0, 100% 100%, 10% 100%);
+  z-index: 0;
+}
+
+/* Hide page number on title slide */
+section.title::after {
+  display: none;
+}
+
+section.title h1 {
+  color: white;
+  font-size: 2.8em;
+  border: none;
+  margin-bottom: 0.15em;
+  line-height: 1.05;
+  max-width: 60%;
+  position: relative;
+  z-index: 1;
+}
+
+section.title h2 {
+  color: rgba(255,255,255,0.85);
+  font-size: 1.2em;
+  font-weight: 300;
+  border: none;
+  max-width: 60%;
+  position: relative;
+  z-index: 1;
+}
+
+section.title p {
+  color: rgba(255,255,255,0.7);
+  font-size: 0.9em;
+  max-width: 55%;
+  position: relative;
+  z-index: 1;
+}
+
+/* ═══════════════════════════════════════════════════════
+   SECTION DIVIDER  (<!-- _class: section -->)
+   ═══════════════════════════════════════════════════════ */
+section.section {
+  background-color: var(--color-primary);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 80px 90px;
+}
+
+/* Diagonal accent stripe across bottom */
+section.section::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 120px;
+  background:
+    radial-gradient(circle, rgba(0,39,76,0.35) 1px, transparent 1px),
+    var(--color-accent);
+  background-size: 10px 10px, 100% 100%;
+  transform: skewY(-3deg);
+  transform-origin: bottom left;
+  z-index: 0;
+}
+
+/* Hide page number on section divider */
+section.section::after {
+  display: none;
+}
+
+section.section h1 {
+  color: var(--color-accent);
+  font-size: 2.6em;
+  border: none;
+  position: relative;
+  z-index: 1;
+}
+
+section.section h2 {
+  color: rgba(255,255,255,0.85);
+  font-size: 1.2em;
+  font-weight: 400;
+  border: none;
+  position: relative;
+  z-index: 1;
+}
+
+/* ═══════════════════════════════════════════════════════
+   ACCENT CONTENT SLIDE  (<!-- _class: accent -->)
+   Dark background for emphasis slides
+   ═══════════════════════════════════════════════════════ */
+section.accent {
+  background-color: var(--color-primary);
+  color: var(--color-accent);
+  padding-top: 80px;
+}
+
+/* Subtle geometric shape in corner */
+section.accent::before {
+  content: '';
+  position: absolute;
+  bottom: -60px;
+  right: -60px;
+  width: 350px;
+  height: 350px;
+  background: rgba(255,203,5,0.1);
+  transform: rotate(-35deg);
+  transform-origin: bottom right;
+}
+
+section.accent h1,
+section.accent h2,
+section.accent h3 {
+  color: var(--color-accent);
+  border-color: rgba(255,203,5,0.3);
+}
+
+section.accent strong {
+  color: var(--color-accent);
+}
+
+section.accent li {
+  color: var(--color-accent);
+}
+
+section.accent li::marker {
+  color: var(--color-accent);
+}
+
+section.accent blockquote {
+  background-color: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.8);
+}
+
+section.accent a {
+  color: var(--color-accent);
+}
+
+section.accent th {
+  color: var(--color-accent);
+  background-color: rgba(255,255,255,0.1);
+}
+
+section.accent td {
+  border-bottom-color: rgba(255,255,255,0.15);
+  color: var(--color-accent);
+}
+
+/* ═══════════════════════════════════════════════════════
+   TWO-COLUMN LAYOUT
+   ═══════════════════════════════════════════════════════ */
+.columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2em;
+  align-items: start;
+}
+
+/* ═══════════════════════════════════════════════════════
+   THREE-COLUMN LAYOUT
+   ═══════════════════════════════════════════════════════ */
+.three-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: auto 1fr;
+  gap: 0.5em 1.5em;
+  text-align: center;
+  align-items: center;
+}
+
+/* ═══════════════════════════════════════════════════════
+   STAT / CALLOUT NUMBERS
+   ═══════════════════════════════════════════════════════ */
+.stat {
+  font-size: 3.5em;
+  font-weight: 800;
+  color: var(--color-accent);
+  line-height: 1;
+  margin: 1em 0 0 0;
+}
+
+.stat:first-child {
+  margin-top: 40px;
+}
+
+.stat-label {
+  font-size: 0.85em;
+  color: var(--color-muted);
+  font-weight: 500;
+  margin: 0.1em 0 2em 0;
+}
+
+section.accent .stat {
+  color: var(--color-accent);
+}
+
+section.accent .stat-label {
+  color: var(--color-accent);
+}
+
+/* ═══════════════════════════════════════════════════════
+   FOOTNOTE
+   ═══════════════════════════════════════════════════════ */
+.footnote {
+  position: absolute;
+  bottom: 30px;
+  left: 70px;
+  font-size: 0.5em;
+  color: var(--color-muted);
+  z-index: 2;
+}
+
+/* ═══════════════════════════════════════════════════════
+   PRINT / SCREEN VISIBILITY
+   ═══════════════════════════════════════════════════════ */
+.screen-only { display: block; }
+.print-only { display: none; }
+
+@media print {
+  .screen-only { display: none !important; }
+  .print-only { display: block !important; }
+}
