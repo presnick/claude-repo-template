@@ -26,6 +26,26 @@ Edit `slides/presentation.qmd`. Slides are separated by headings:
 
 Place images in `slides/images/`. Both `![alt text]` and `{fig-alt="..."}` provide accessibility — use `fig-alt` for longer descriptions.
 
+Images are automatically scaled to fit within the slide (max 55% of viewport height). For multi-column layouts, you may need inline `style="max-height:620px; width:100%; object-fit:contain;"` to fine-tune sizing.
+
+### Full-bleed image slides
+
+Use a background image to fill the entire slide with no title or heading:
+
+```markdown
+## {background-image="images/photo.png" background-size="contain" background-color="#ffffff"}
+```
+
+### Titleless content slides
+
+Use the `.no-title` class for slides that need maximum content area (e.g., multi-column image layouts):
+
+```markdown
+## {.no-title}
+
+Content here gets the full slide area — no heading or yellow underline.
+```
+
 ### Two-column layout
 
 ```markdown
@@ -41,6 +61,8 @@ Right column
 
 ::::
 ```
+
+Add `style="gap: 2em;"` to `:::: {.columns}` for spacing between columns.
 
 ### Speaker notes
 
@@ -77,13 +99,23 @@ Renders a self-contained HTML file to `docs/presentation.html` with all assets (
 
 ### Accessibility check
 
+**Run before every push:**
+
 ```bash
-npm run slides:a11y
+npm run slides:a11y:all
 ```
 
-Runs [axe-core](https://github.com/dequelabs/axe-core) WCAG 2.1 AA checks against the rendered HTML. Returns non-zero on violations, so it can be used in CI.
+This runs both checks:
 
-One upstream reveal.js issue is suppressed (`meta-viewport` — reveal.js disables pinch-to-zoom for its scaling to work). The slide menu plugin is disabled (`menu: false`) to avoid its accessibility issue; use `Esc` for the overview mode instead.
+1. **axe-core** (`npm run slides:a11y`) — WCAG 2.1 AA static analysis of the rendered HTML
+2. **Accessibility tree test** (`npm run slides:a11y:menu`) — verifies that the runtime ARIA patches for the slide menu produce correct roles, labels, focus management, and inert state. Uses Puppeteer to inspect the browser's accessibility tree.
+
+Suppressed axe rules (all fixed at runtime by JS in `presentation.qmd`, but axe tests static HTML before scripts run):
+
+- **`meta-viewport`**: reveal.js disables pinch-to-zoom; runtime script re-enables it
+- **`link-name`**: slide menu button `<a>` gets `aria-label` at runtime
+- **`scrollable-region-focusable`**: menu panel gets `tabindex` and proper roles at runtime
+- **`frame-title`**: YouTube iframes from Quarto's `{{< video >}}` shortcode get `title` at runtime
 
 ### Build commands summary
 
@@ -91,7 +123,10 @@ One upstream reveal.js issue is suppressed (`meta-viewport` — reveal.js disabl
 |---------|--------|-------------|
 | `npm run slides:dev` | browser | Live preview with hot-reload |
 | `npm run slides:html` | `docs/presentation.html` | Self-contained HTML build |
-| `npm run slides:a11y` | terminal | axe-core accessibility check |
+| `npm run slides:a11y:all` | terminal | All accessibility checks (run before every push) |
+| `npm run slides:a11y` | terminal | axe-core checks only |
+| `npm run slides:a11y:menu` | terminal | Accessibility tree + focus management checks only |
+| `npm run slides:check` | terminal | Check all slides for content overflow |
 | `npm run slides:zip` | `presentation.zip` | Build + zip for distribution |
 
 ## Publishing to GitHub Pages
@@ -133,8 +168,11 @@ You can also find the URL on the repo's GitHub Pages settings page. It takes a m
 
 - **Clean semantic DOM**: reveal.js uses `<section>` elements with real HTML content
 - **`aria-hidden`** on inactive slides (built into reveal.js)
-- **Built-in `aria-live` region** announces slide content to screen readers on transition
+- **Slide change announcements**: reveal.js's `aria-live` region is patched to announce just the slide title/number instead of dumping all content (which caused double-reading)
 - **Keyboard navigation**: arrow keys, Space, Escape for overview
+- **Navigation menu**: Press `M` to open. The menu plugin's DOM is patched at runtime with proper ARIA roles (`menu`, `menuitem`, `tab`, `button`) so screen readers can navigate slide titles and toolbar items
+- **Pinch-to-zoom**: Enabled on mobile via a viewport meta override (reveal.js disables it by default)
+- **Color contrast**: Bullet markers use a darker gold (#C8A200) instead of the standard Michigan maize (#FFCB05) to meet WCAG AA contrast requirements on white backgrounds
 - **`slide-tone`**: Set to `true` in `presentation.qmd` to play an auditory tone on slide transitions (plays for all users)
 - **`axe: output: console`** in the YAML enables Quarto's built-in axe-core checks during `quarto preview`
 

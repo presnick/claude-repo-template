@@ -5,7 +5,10 @@
     "slides:html": "cd slides && quarto render presentation.qmd",
     "slides:pdf": "cd docs && decktape reveal presentation.html presentation.pdf",
     "slides:zip": "npm run slides:html && cd docs && zip -r ../presentation.zip . && cd ..",
-    "slides:a11y": "npx axe file://$PWD/docs/presentation.html --exit --disable meta-viewport"
+    "slides:a11y": "npx axe file://$PWD/docs/presentation.html --exit --disable meta-viewport,link-name,scrollable-region-focusable,frame-title",
+    "slides:a11y:menu": "node tests/a11y-menu.mjs",
+    "slides:a11y:all": "npm run slides:a11y && npm run slides:a11y:menu",
+    "slides:check": "node scripts/check-overflow.mjs"
   },
   "devDependencies": {
     "@axe-core/cli": "^4.11.1",

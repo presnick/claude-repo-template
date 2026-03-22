@@ -12,7 +12,139 @@ format:
     slide-level: 2
     center: false
     auto-stretch: false
-    menu: false
+    min-scale: 0.2
+    max-scale: 1.5
+    include-in-header:
+      - text: |
+          <script>
+          document.addEventListener('DOMContentLoaded', function() {
+            // Fix viewport for mobile pinch-to-zoom
+            var vp = document.querySelector('meta[name="viewport"]');
+            if (vp) vp.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=10.0, user-scalable=yes');
+
+            // Fix menu plugin accessibility
+            var observer = new MutationObserver(function(mutations, obs) {
+              var nav = document.querySelector('.slide-menu-wrapper nav.slide-menu');
+              if (!nav) return;
+              obs.disconnect();
+
+              // Label the nav element
+              nav.setAttribute('aria-label', 'Slide navigation menu');
+
+              // Fix toolbar: make it a tablist with proper tab roles
+              var toolbar = nav.querySelector('ol.slide-menu-toolbar');
+              if (toolbar) {
+                toolbar.setAttribute('role', 'tablist');
+                toolbar.querySelectorAll('li.toolbar-panel-button').forEach(function(li) {
+                  li.setAttribute('role', 'tab');
+                  li.setAttribute('tabindex', '0');
+                  var label = li.querySelector('.slide-menu-toolbar-label');
+                  if (label) li.setAttribute('aria-label', label.textContent);
+                });
+              }
+
+              // Fix slide list: make it a menu with menuitems
+              nav.querySelectorAll('.slide-menu-items').forEach(function(ul) {
+                ul.setAttribute('role', 'menu');
+              });
+              nav.querySelectorAll('.slide-menu-item').forEach(function(li) {
+                li.setAttribute('role', 'menuitem');
+                li.setAttribute('tabindex', '0');
+                var title = li.querySelector('.slide-menu-item-title');
+                if (title) li.setAttribute('aria-label', 'Go to slide: ' + title.textContent);
+              });
+
+              // Fix tool items: ensure links have proper labels
+              nav.querySelectorAll('.slide-tool-item a').forEach(function(a) {
+                a.setAttribute('role', 'button');
+              });
+
+              // Fix the menu open button (hamburger)
+              var menuBtn = document.querySelector('.slide-menu-button a');
+              if (menuBtn) {
+                menuBtn.setAttribute('aria-label', 'Open slide navigation menu');
+                menuBtn.setAttribute('role', 'button');
+              }
+
+              // Hide menu from screen readers and tab order when closed
+              var wrapper = document.querySelector('.slide-menu-wrapper');
+              if (wrapper) {
+                wrapper.inert = true;
+                var menuObserver = new MutationObserver(function() {
+                  var isOpen = nav.classList.contains('active');
+                  wrapper.inert = !isOpen;
+                  if (isOpen) {
+                    // Move focus into the menu so screen readers can navigate it
+                    var firstItem = nav.querySelector('[role="tab"], [role="menuitem"]');
+                    if (firstItem) setTimeout(function() { firstItem.focus(); }, 50);
+                  } else {
+                    // Move focus to the current slide's heading or section
+                    setTimeout(function() {
+                      var current = document.querySelector('.reveal .slides section.present');
+                      if (current) {
+                        var heading = current.querySelector('h1, h2, h3');
+                        if (heading) {
+                          heading.setAttribute('tabindex', '-1');
+                          heading.focus();
+                        } else {
+                          current.setAttribute('tabindex', '-1');
+                          current.focus();
+                        }
+                      }
+                    }, 100);
+                  }
+                });
+                menuObserver.observe(nav, { attributes: true, attributeFilter: ['class'] });
+              }
+            });
+            observer.observe(document.body, { childList: true, subtree: true });
+
+            // Fix: reveal.js's aria-live region dumps full slide text, causing
+            // screen readers to read everything twice. Replace with a brief
+            // announcement (slide title + number) so users know they moved
+            // without hearing the entire slide repeated.
+            var statusObs = new MutationObserver(function() {
+              var statusDiv = document.querySelector('.aria-status');
+              if (!statusDiv) return;
+              statusObs.disconnect();
+
+              // Override the content reveal.js puts in the aria-live region.
+              // Disconnect before writing to prevent infinite loop, then reconnect.
+              function observeStatus() {
+                contentObs.observe(statusDiv, { childList: true, characterData: true, subtree: true });
+              }
+              var contentObs = new MutationObserver(function() {
+                contentObs.disconnect();
+                var slide = Reveal.getCurrentSlide();
+                if (!slide) { observeStatus(); return; }
+                var heading = slide.querySelector('h1, h2, h3');
+                var title = heading ? heading.textContent.trim() : '';
+                var indices = Reveal.getIndices();
+                var label = 'Slide ' + (indices.h + 1);
+                if (title) label += ': ' + title;
+                statusDiv.textContent = label;
+                observeStatus();
+              });
+              observeStatus();
+            });
+            statusObs.observe(document.body, { childList: true, subtree: true });
+
+            // Fix: Quarto video shortcode creates iframes without title attribute
+            document.querySelectorAll('iframe').forEach(function(iframe) {
+              if (!iframe.title) {
+                var src = iframe.src || '';
+                if (src.includes('youtube')) {
+                  // Use the slide heading as context
+                  var slide = iframe.closest('section');
+                  var heading = slide && slide.querySelector('h2');
+                  iframe.title = heading ? 'Video: ' + heading.textContent.trim() : 'Embedded video';
+                } else {
+                  iframe.title = 'Embedded content';
+                }
+              }
+            });
+          });
+          </script>
     axe:
       output: console
 title-slide-attributes:

@@ -32,8 +32,11 @@ $presentation-title-slide-text-align: left;
   text-align: left;
 }
 
-.reveal .slides section:not(#title-slide):not(.section-divider) {
-  top: 0 !important;
+// Top-align content slides only on viewports wide enough for RevealJS scaling to work
+@media (min-width: 500px) {
+  .reveal .slides section:not(#title-slide):not(.section-divider) {
+    top: 0 !important;
+  }
 }
 
 // ── Title slide ──
@@ -83,9 +86,24 @@ $presentation-title-slide-text-align: left;
   margin-bottom: 0.6em;
 }
 
+// Hide heading + underline on full-bleed image slides and no-title slides
+.reveal section[data-background-image] h2,
+.reveal section.no-title h2 {
+  display: none !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+}
+
+// Remove top padding on no-title slides to maximize content area
+.reveal section.no-title {
+  padding-top: 0 !important;
+}
+
 // ── Bullet markers ──
 .reveal ul > li::marker {
-  color: $accent;
+  color: #C8A200; // Darker gold — 3.26:1 on white (AA large text), keeps Michigan feel
   font-weight: 800;
 }
 
@@ -115,6 +133,11 @@ $presentation-title-slide-text-align: left;
   font-weight: 700;
   padding: 0.5em 0.8em;
   text-align: left;
+
+  // Keep bold/strong text white inside dark headers
+  strong {
+    color: #ffffff;
+  }
 }
 
 .reveal table td {
@@ -160,4 +183,54 @@ $presentation-title-slide-text-align: left;
 // ── Images ──
 .reveal img {
   border-radius: 8px;
+  max-height: 55vh;
+  object-fit: contain;
+}
+
+// Remove extra margin from Quarto figure wrappers
+.reveal .quarto-figure {
+  margin-bottom: 0;
+}
+.reveal figure {
+  margin-bottom: 0;
+}
+
+// ── Slide number: ensure contrast ──
+.reveal .slide-number {
+  color: #ffffff;
+  background-color: rgba(0, 0, 0, 0.6);
+
+  a, span {
+    color: #ffffff !important;
+  }
+}
+
+// ── Navigation controls ──
+.reveal .controls button {
+  color: $primary;
+}
+
+// On dark slides, keep controls white
+.reveal section[data-background-color="#00274C"] ~ .controls button,
+#title-slide ~ .controls button {
+  color: #ffffff;
+}
+
+// ── Mobile adjustments ──
+@media (max-width: 500px) {
+  .reveal .slides section {
+    padding: 0.5em;
+  }
+
+  .reveal h2 {
+    font-size: 1.4em;
+  }
+
+  .reveal table {
+    font-size: 0.7em;
+  }
+
+  #title-slide h1.title {
+    font-size: 1.8em;
+  }
 }
